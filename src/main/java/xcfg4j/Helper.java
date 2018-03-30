@@ -70,6 +70,64 @@ public class Helper {
 	public static String getAppCfgFolder() {
 		return getCfgFolder() + "/" + getAppName() + "/" + getEnvironment();
 	}
+	
+	   public static byte[] SerializeToXml<T>(T obj)
+       {
+           byte[] bytes = null;
+           try
+           {
+               using (System.IO.MemoryStream writer = new System.IO.MemoryStream())
+               {
+                   System.Xml.Serialization.XmlSerializer xs = new System.Xml.Serialization.XmlSerializer(typeof(T));
+                   xs.Serialize(writer, obj);
+                   bytes = writer.ToArray();
+               }
+           }
+           catch (Exception ex) { }
+           return bytes;
+       }
+
+	public static String GetRemoteCfgUrl()
+       {
+           return GetRemoteCfgShortUrl() + "/ConfigVersionHandler.ashx";
+       }
+
+       public static T DeserializeFromXml<T>(String xmlStr)
+       {
+           try
+           {
+               var bytes = Encoding.UTF8.GetBytes(xmlStr);
+               System.Xml.Serialization.XmlSerializer xs = new System.Xml.Serialization.XmlSerializer(typeof(T));
+               T ret = (T)xs.Deserialize(new MemoryStream(bytes));
+               return ret;
+           }
+           catch (Exception ex)
+           {
+               return default(T);
+           }
+       }
+
+       public static XmlConfig DeserializeFromXml(String xmlStr, Type type)
+       {
+           try
+           {
+               var bytes = Encoding.UTF8.GetBytes(xmlStr);
+               System.Xml.Serialization.XmlSerializer xs = new System.Xml.Serialization.XmlSerializer(type);
+               var ret = (XmlConfig)xs.Deserialize(new MemoryStream(bytes));
+               return ret;
+           }
+           catch (Exception ex)
+           {
+               return null;
+           }
+       }
+
+       public static String GetRemoteCfgShortUrl()
+       {
+           var host = ConfigurationManager.AppSettings["remote_cfg_host"] ?? "";
+           var port = ConfigurationManager.AppSettings["remote_cfg_port"] ?? "";
+           return $"http://{host}:{port}";
+       }
 
 	public static boolean isNullOrEmpty(String input) {
 		return input == null || input.length() == 0;
