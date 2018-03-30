@@ -7,6 +7,5 @@ package xcfg4j;
 public class App {
 	public static void main(String[] args) {
 		System.out.println(Helper.getAppCfgFolder());
-		System.out.print("fd");
 	}
 }
