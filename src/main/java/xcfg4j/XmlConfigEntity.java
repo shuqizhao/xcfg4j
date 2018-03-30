@@ -4,11 +4,12 @@ import javax.xml.bind.annotation.XmlElement;
 
 public class XmlConfigEntity {
 	
-	@XmlElement(name = "student")  
 	private String name;
 
+	@XmlElement(name = "majorVersion")  
 	private int major;
 
+	@XmlElement(name = "minorVersion")  
 	private int minor;
 
 	public String getName() {
