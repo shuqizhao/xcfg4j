@@ -1,15 +1,15 @@
 package xcfg4j;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 
 public class XmlConfigEntity {
-	
+
 	private String name;
 
-	@XmlElement(name = "majorVersion")  
+	@XmlAttribute(name = "majorVersion")
 	private int major;
 
-	@XmlElement(name = "minorVersion")  
+	@XmlAttribute(name = "minorVersion")
 	private int minor;
 
 	public String getName() {
