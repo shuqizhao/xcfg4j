@@ -10,8 +10,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -141,9 +143,9 @@ public class Helper {
 
 	public static RemoteConfigSection getRemoteConfigSectionParam(String cfgName, int majorVersion, int minorVersion) {
 		RemoteConfigSectionCollection rcfg = new RemoteConfigSectionCollection();
-		rcfg.setApplication(Helper.getAppName());
-		rcfg.setMachine(System.getenv().get("COMPUTERNAME"));
-		rcfg.setEnvironment(Helper.getEnvironment());
+		rcfg.setApplication(getAppName());
+		rcfg.setMachine(getHostName());
+		rcfg.setEnvironment(getEnvironment());
 		rcfg.setSections(new RemoteConfigSection[1]);
 		RemoteConfigSection rcs = new RemoteConfigSection();
 		rcs.setSectionName(cfgName.toLowerCase());
@@ -201,7 +203,7 @@ public class Helper {
 		String result = "";
 		BufferedReader in = null;
 		try {
-			String urlNameString = url + "?" + param;
+			String urlNameString = url;
 			URL realUrl = new URL(urlNameString);
 			// 打开和URL之间的连接
 			URLConnection connection = realUrl.openConnection();
@@ -211,12 +213,12 @@ public class Helper {
 			connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 			// 建立实际的连接
 			connection.connect();
-			// 获取所有响应头字段
-			Map<String, List<String>> map = connection.getHeaderFields();
-			// 遍历所有的响应头字段
-			for (String key : map.keySet()) {
-				System.out.println(key + "--->" + map.get(key));
-			}
+//			// 获取所有响应头字段
+//			Map<String, List<String>> map = connection.getHeaderFields();
+//			// 遍历所有的响应头字段
+//			for (String key : map.keySet()) {
+//				System.out.println(key + "--->" + map.get(key));
+//			}
 			// 定义 BufferedReader输入流来读取URL的响应
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
@@ -288,5 +290,17 @@ public class Helper {
             }
         }
         return result;
+	}
+	
+	public static String getHostName() {
+		InetAddress addr;
+		try {
+			addr = InetAddress.getLocalHost();
+			String hostName=addr.getHostName().toString(); //获取本机计算机名称  
+			return hostName;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			return "Unkown";
+		}   
 	}
 }

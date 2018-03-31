@@ -2,7 +2,10 @@ package xcfg4j;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
+@XmlRootElement(name = "RemoteConfigSectionCollection")
 public class RemoteConfigSectionCollection {
 
 	@XmlAttribute(name = "machine")
@@ -17,6 +20,7 @@ public class RemoteConfigSectionCollection {
 	@XmlElement(name = "section")
 	private RemoteConfigSection[] sections;
 
+	@XmlTransient
 	public String getMachine() {
 		return machine;
 	}
@@ -25,6 +29,7 @@ public class RemoteConfigSectionCollection {
 		this.machine = machine;
 	}
 
+	@XmlTransient
 	public String getApplication() {
 		return application;
 	}
@@ -33,6 +38,7 @@ public class RemoteConfigSectionCollection {
 		this.application = application;
 	}
 
+	@XmlTransient
 	public String getEnvironment() {
 		return environment;
 	}
@@ -41,6 +47,7 @@ public class RemoteConfigSectionCollection {
 		this.environment = environment;
 	}
 
+	@XmlTransient
 	public RemoteConfigSection[] getSections() {
 		return sections;
 	}

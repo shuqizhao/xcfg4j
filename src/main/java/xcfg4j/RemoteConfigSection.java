@@ -1,6 +1,7 @@
 package xcfg4j;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
 public class RemoteConfigSection {
 	@XmlAttribute(name = "name")
@@ -15,6 +16,7 @@ public class RemoteConfigSection {
 	@XmlAttribute(name = "downloadUrl")
 	private String downloadUrl;
 
+	@XmlTransient
 	public String getSectionName() {
 		return sectionName;
 	}
@@ -23,6 +25,7 @@ public class RemoteConfigSection {
 		this.sectionName = sectionName;
 	}
 
+	@XmlTransient
 	public String getDownloadUrl() {
 		return downloadUrl;
 	}
@@ -31,6 +34,7 @@ public class RemoteConfigSection {
 		this.downloadUrl = downloadUrl;
 	}
 
+	@XmlTransient
 	public int getMinorVersion() {
 		return minorVersion;
 	}
@@ -39,6 +43,7 @@ public class RemoteConfigSection {
 		this.minorVersion = minorVersion;
 	}
 
+	@XmlTransient
 	public int getMajorVersion() {
 		return majorVersion;
 	}
