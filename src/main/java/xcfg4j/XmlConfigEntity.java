@@ -1,6 +1,7 @@
 package xcfg4j;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
 public class XmlConfigEntity {
 
@@ -12,6 +13,7 @@ public class XmlConfigEntity {
 	@XmlAttribute(name = "minorVersion")
 	private int minor;
 
+	@XmlTransient
 	public String getName() {
 		return name;
 	}
@@ -20,6 +22,7 @@ public class XmlConfigEntity {
 		this.name = name;
 	}
 
+	@XmlTransient
 	public int getMajor() {
 		return major;
 	}
@@ -28,6 +31,7 @@ public class XmlConfigEntity {
 		this.major = major;
 	}
 
+	@XmlTransient
 	public int getMinor() {
 		return minor;
 	}

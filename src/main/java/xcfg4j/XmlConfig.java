@@ -1,7 +1,12 @@
 package xcfg4j;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 public class XmlConfig<T extends XmlConfigEntity> extends XmlConfigEntity {
@@ -25,7 +30,6 @@ public class XmlConfig<T extends XmlConfigEntity> extends XmlConfigEntity {
 			instance = newInstance(entity);
 			XmlConfigManager.setXmlConfig(cfgName, instance);
 		}
-		System.out.println(cfgName);
 		return instance;
 	}
 
@@ -56,9 +60,9 @@ public class XmlConfig<T extends XmlConfigEntity> extends XmlConfigEntity {
 
 	private static <T> String getCfgName(Class<T> t) {
 		String cfgName = "";
-		XmlType xmlType = t.getAnnotation(XmlType.class);
-		if (xmlType != null && !Helper.isNullOrEmpty(xmlType.name())) {
-			cfgName = xmlType.name();
+		XmlRootElement xmlRootElement = t.getAnnotation(XmlRootElement.class);
+		if (xmlRootElement != null && !Helper.isNullOrEmpty(xmlRootElement.name())) {
+			cfgName = xmlRootElement.name();
 		}
 
 		if (Helper.isNullOrEmpty(cfgName)) {
@@ -72,8 +76,34 @@ public class XmlConfig<T extends XmlConfigEntity> extends XmlConfigEntity {
 		if (!file.exists()) {
 			return null;
 		}
-
-		String xmlStr = "";
+		String xmlStr = readToString(file);
 		return Helper.deserializeFromXml(xmlStr, entity);
+	}
+
+	public static String readToString(String fileName) {
+		File file = new File(fileName);
+		return readToString(file);
+	}
+
+	public static String readToString(File file) {
+		String encoding = "UTF-8";
+		Long filelength = file.length();
+		byte[] filecontent = new byte[filelength.intValue()];
+		try {
+			FileInputStream in = new FileInputStream(file);
+			in.read(filecontent);
+			in.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			return new String(filecontent, encoding);
+		} catch (UnsupportedEncodingException e) {
+			System.err.println("The OS does not support " + encoding);
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
