@@ -3,6 +3,7 @@ package xcfg4j;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,17 +11,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -134,6 +133,7 @@ public class Helper {
 		try {
 			JAXBContext jc = JAXBContext.newInstance(entity);
 			Unmarshaller unmar = jc.createUnmarshaller();
+			@SuppressWarnings("unchecked")
 			T ret = (T) unmar.unmarshal(new StringReader(xmlStr));
 			return ret;
 		} catch (Exception ex) {
@@ -161,7 +161,7 @@ public class Helper {
 		}
 	}
 
-	private static RemoteConfigSectionCollection GetServerVersions(RemoteConfigSectionCollection rcfg) {
+	static RemoteConfigSectionCollection GetServerVersions(RemoteConfigSectionCollection rcfg) {
 		String requestStr = Helper.serializeToXml(rcfg);
 		String url = Helper.getRemoteCfgUrl();
 		String xmlStr = Helper.HttpPost(url, requestStr);
@@ -297,6 +297,33 @@ public class Helper {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			return "Unkown";
+		}
+	}
+	
+	public static String readToString(String fileName) {
+		File file = new File(fileName);
+		return readToString(file);
+	}
+
+	public static String readToString(File file) {
+		String encoding = "UTF-8";
+		Long filelength = file.length();
+		byte[] filecontent = new byte[filelength.intValue()];
+		try {
+			FileInputStream in = new FileInputStream(file);
+			in.read(filecontent);
+			in.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			return new String(filecontent, encoding);
+		} catch (UnsupportedEncodingException e) {
+			System.err.println("The OS does not support " + encoding);
+			e.printStackTrace();
+			return null;
 		}
 	}
 }
