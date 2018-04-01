@@ -23,6 +23,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.dom4j.Document;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
+
 public class Helper {
 
 	public static final String Product = "prod";
@@ -48,7 +53,7 @@ public class Helper {
 			prop.load(input);
 			appName = prop.getProperty("appname");
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		if (isNullOrEmpty(appName)) {
@@ -70,7 +75,7 @@ public class Helper {
 			prop.load(input);
 			environment = prop.getProperty("environment");
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		if (environment.equals(Product)) {
@@ -105,7 +110,7 @@ public class Helper {
 			host = prop.getProperty("remote_cfg_host");
 			port = prop.getProperty("remote_cfg_port");
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 		return String.format("http://%s:%s", host, port);
 	}
@@ -142,7 +147,7 @@ public class Helper {
 		}
 	}
 
-	public static RemoteConfigSection getRemoteConfigSectionParam(String cfgName, int majorVersion, int minorVersion) {
+	static RemoteConfigSection getRemoteConfigSectionParam(String cfgName, int majorVersion, int minorVersion) {
 		RemoteConfigSectionCollection rcfg = new RemoteConfigSectionCollection();
 		rcfg.setApplication(getAppName());
 		rcfg.setMachine(getHostName());
@@ -153,7 +158,7 @@ public class Helper {
 		rcs.setMajorVersion(majorVersion);
 		rcs.setMinorVersion(minorVersion);
 		rcfg.getSections()[0] = rcs;
-		RemoteConfigSectionCollection rcfgResult = GetServerVersions(rcfg);
+		RemoteConfigSectionCollection rcfgResult = getServerVersions(rcfg);
 		if (rcfgResult == null || rcfgResult.getSections() == null || rcfgResult.getSections().length == 0) {
 			return null;
 		} else {
@@ -161,14 +166,14 @@ public class Helper {
 		}
 	}
 
-	static RemoteConfigSectionCollection GetServerVersions(RemoteConfigSectionCollection rcfg) {
+	static RemoteConfigSectionCollection getServerVersions(RemoteConfigSectionCollection rcfg) {
 		String requestStr = Helper.serializeToXml(rcfg);
 		String url = Helper.getRemoteCfgUrl();
 		String xmlStr = Helper.HttpPost(url, requestStr);
 		return Helper.deserializeFromXml(xmlStr, RemoteConfigSectionCollection.class);
 	}
 
-	public static boolean downloadRemoteCfg(String sectionName, String url, String targetPath) {
+	static boolean downloadRemoteCfg(String sectionName, String url, String targetPath) {
 		try {
 			if (!url.startsWith("http")) {
 				url = Helper.getRemoteCfgShortUrl() + "/" + url;
@@ -176,7 +181,7 @@ public class Helper {
 
 			String data = Helper.HttpGet(url, "");
 
-			data = FormatXml(data);
+			data = formatXml(data);
 
 			String tempFile = targetPath + "." + UUID.randomUUID();
 			FileWriter writer = new FileWriter(tempFile, true);
@@ -194,11 +199,37 @@ public class Helper {
 		}
 	}
 
-	private static String FormatXml(String data) {
-		return data;
+	static String formatXml(String inputXML) {
+		try {
+			SAXReader reader = new SAXReader();
+			Document document = reader.read(new StringReader(inputXML));
+			String requestXML = null;
+			XMLWriter writer = null;
+			if (document != null) {
+				try {
+					StringWriter stringWriter = new StringWriter();
+					OutputFormat format = new OutputFormat(" ", true);
+					writer = new XMLWriter(stringWriter, format);
+					writer.write(document);
+					writer.flush();
+					requestXML = stringWriter.getBuffer().toString();
+				} finally {
+					if (writer != null) {
+						try {
+							writer.close();
+						} catch (IOException e) {
+						}
+					}
+				}
+			}
+			return requestXML;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return inputXML;
 	}
 
-	private static String HttpGet(String url, String param) {
+	static String HttpGet(String url, String param) {
 		String result = "";
 		BufferedReader in = null;
 		try {
@@ -241,7 +272,7 @@ public class Helper {
 		return result;
 	}
 
-	public static String HttpPost(String url, String param) {
+	static String HttpPost(String url, String param) {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String result = "";
@@ -299,7 +330,7 @@ public class Helper {
 			return "Unkown";
 		}
 	}
-	
+
 	public static String readToString(String fileName) {
 		File file = new File(fileName);
 		return readToString(file);

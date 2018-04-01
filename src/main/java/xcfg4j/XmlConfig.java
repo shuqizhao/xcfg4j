@@ -1,13 +1,7 @@
 package xcfg4j;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 public class XmlConfig<T extends XmlConfigEntity> extends XmlConfigEntity {
 
@@ -25,6 +19,7 @@ public class XmlConfig<T extends XmlConfigEntity> extends XmlConfigEntity {
 
 	public static synchronized <T extends XmlConfig<T>> T getInstance(Class<T> entity) {
 		String cfgName = getCfgName(entity);
+		@SuppressWarnings("unchecked")
 		T instance = (T) XmlConfigManager.getXmlConfig(cfgName);
 		if (instance == null) {
 			instance = newInstance(entity);
