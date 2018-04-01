@@ -8,7 +8,7 @@ public class XmlConfigManager {
 	private static final ConcurrentHashMap<String, XmlConfig<?>> _dic = new ConcurrentHashMap<String, XmlConfig<?>>();
 
 	static {
-		new Thread(new Runnable() {
+		Thread t = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
 					try {
@@ -32,8 +32,9 @@ public class XmlConfigManager {
 							}
 
 							RemoteConfigSectionCollection rcfgResult = Helper.getServerVersions(rcfg);
-							if (rcfgResult == null || rcfgResult.getSections() == null || rcfgResult.getSections().length == 0) {
-								// System.out.println("...no change");
+							if (rcfgResult == null || rcfgResult.getSections() == null
+									|| rcfgResult.getSections().length == 0) {
+//								 System.out.println("...no change");
 							} else {
 								System.out.println("...has change");
 								String cfgFolder = Helper.getAppCfgFolder();
@@ -58,7 +59,9 @@ public class XmlConfigManager {
 					}
 				}
 			}
-		}).start();
+		});
+		t.setDaemon(true);
+		t.start();
 	}
 
 	static void setXmlConfig(String name, XmlConfig<?> xmlConfig) {
