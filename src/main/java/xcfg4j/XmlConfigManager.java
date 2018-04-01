@@ -32,8 +32,8 @@ public class XmlConfigManager {
 							}
 
 							RemoteConfigSectionCollection rcfgResult = Helper.getServerVersions(rcfg);
-							if (rcfgResult.getSections() == null || rcfgResult.getSections().length == 0) {
-//								System.out.println("...no change");
+							if (rcfgResult == null || rcfgResult.getSections() == null || rcfgResult.getSections().length == 0) {
+								// System.out.println("...no change");
 							} else {
 								System.out.println("...has change");
 								String cfgFolder = Helper.getAppCfgFolder();
@@ -62,6 +62,8 @@ public class XmlConfigManager {
 	}
 
 	static void setXmlConfig(String name, XmlConfig<?> xmlConfig) {
+		if (xmlConfig == null)
+			return;
 		xmlConfig.setName(name);
 		_dic.put(name.toLowerCase(), xmlConfig);
 	}

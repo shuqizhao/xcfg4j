@@ -43,12 +43,25 @@ public class Helper {
 			return "/usr/local/etc/xcfg.configs";
 		}
 	}
+	
+	private static String getRuningPath() {
+//		return Helper.class.getResource("").getPath();
+		File directory = new File("");//设定为当前文件夹 
+		try{ 
+//		    System.out.println(directory.getCanonicalPath());//获取标准的路径 
+//		    System.out.println(directory.getAbsolutePath());//获取绝对路径 
+		    return directory.getAbsolutePath();
+		}catch(Exception e){
+			e.printStackTrace();
+		} 
+		return "";
+	}
 
 	public static String getAppName() {
 		String appName = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(Helper.class.getResource("").getPath() + "/app.properties");
+			File file = new File(getRuningPath()+ "/app.properties");
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			appName = prop.getProperty("appname");
@@ -57,7 +70,7 @@ public class Helper {
 		}
 
 		if (isNullOrEmpty(appName)) {
-			String filePath = Helper.class.getResource("").getPath();
+			String filePath = getRuningPath();
 			appName = filePath.replace("\\", "_");
 			appName = filePath.replace("/", "_");
 			appName = appName.replace(":", "_");
@@ -70,7 +83,7 @@ public class Helper {
 		String environment = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(Helper.class.getResource("").getPath() + "/app.properties");
+			File file = new File(getRuningPath()+ "/app.properties");
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			environment = prop.getProperty("environment");
@@ -104,7 +117,7 @@ public class Helper {
 		String port = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(Helper.class.getResource("").getPath() + "/app.properties");
+			File file = new File(getRuningPath()+ "/app.properties");
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			host = prop.getProperty("remote_cfg_host");
@@ -170,6 +183,9 @@ public class Helper {
 		String requestStr = Helper.serializeToXml(rcfg);
 		String url = Helper.getRemoteCfgUrl();
 		String xmlStr = Helper.HttpPost(url, requestStr);
+		if(isNullOrEmpty(xmlStr)) {
+			return null;
+		}
 		return Helper.deserializeFromXml(xmlStr, RemoteConfigSectionCollection.class);
 	}
 
