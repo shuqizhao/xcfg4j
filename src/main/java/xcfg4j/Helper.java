@@ -43,19 +43,6 @@ public class Helper {
 			return "/usr/local/etc/xcfg.configs";
 		}
 	}
-	
-	private static String getRuningPath() {
-//		return Helper.class.getResource("").getPath();
-		File directory = new File(".");//设定为当前文件夹 
-		try{ 
-//		    System.out.println(directory.getCanonicalPath());//获取标准的路径 
-//		    System.out.println(directory.getAbsolutePath());//获取绝对路径 
-		    return directory.getAbsolutePath();
-		}catch(Exception e){
-			e.printStackTrace();
-		} 
-		return "";
-	}
 
 	public static String getAppName() {
 		String appName = "";
@@ -128,6 +115,16 @@ public class Helper {
 		return String.format("http://%s:%s", host, port);
 	}
 
+	private static String getRuningPath() {
+		File directory = new File(".");
+		try{ 
+		    return directory.getAbsolutePath();
+		}catch(Exception e){
+			e.printStackTrace();
+		} 
+		return "";
+	}
+	
 	public static boolean isNullOrEmpty(String input) {
 		return input == null || input.length() == 0;
 	}
