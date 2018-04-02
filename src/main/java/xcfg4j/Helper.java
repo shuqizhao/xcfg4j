@@ -48,7 +48,7 @@ public class Helper {
 		String appName = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(getRuningPath()+ "/app.properties");
+			File file = new File(getRuningPath() + "/app.properties");
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			appName = prop.getProperty("appname");
@@ -70,14 +70,16 @@ public class Helper {
 		String environment = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(getRuningPath()+ "/app.properties");
+			File file = new File(getRuningPath() + "/app.properties");
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			environment = prop.getProperty("environment");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		if (environment == null) {
+			environment = "";
+		}
 		if (environment.equals(Product)) {
 			return Product;
 		} else if (environment.equals(Labs)) {
@@ -104,7 +106,7 @@ public class Helper {
 		String port = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(getRuningPath()+ "/app.properties");
+			File file = new File(getRuningPath() + "/app.properties");
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			host = prop.getProperty("remote_cfg_host");
@@ -117,14 +119,14 @@ public class Helper {
 
 	private static String getRuningPath() {
 		File directory = new File(".");
-		try{ 
-		    return directory.getAbsolutePath();
-		}catch(Exception e){
+		try {
+			return directory.getAbsolutePath();
+		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 		return "";
 	}
-	
+
 	public static boolean isNullOrEmpty(String input) {
 		return input == null || input.length() == 0;
 	}
@@ -180,7 +182,7 @@ public class Helper {
 		String requestStr = Helper.serializeToXml(rcfg);
 		String url = Helper.getRemoteCfgUrl();
 		String xmlStr = Helper.HttpPost(url, requestStr);
-		if(isNullOrEmpty(xmlStr)) {
+		if (isNullOrEmpty(xmlStr)) {
 			return null;
 		}
 		return Helper.deserializeFromXml(xmlStr, RemoteConfigSectionCollection.class);
