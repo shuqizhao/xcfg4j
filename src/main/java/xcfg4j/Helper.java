@@ -223,7 +223,8 @@ public class Helper {
 			if (document != null) {
 				try {
 					StringWriter stringWriter = new StringWriter();
-					OutputFormat format = new OutputFormat(" ", true);
+//					OutputFormat format = new OutputFormat(" ", true);
+					OutputFormat format=OutputFormat.createPrettyPrint(); 
 					writer = new XMLWriter(stringWriter, format);
 					writer.write(document);
 					writer.flush();
