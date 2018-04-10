@@ -2,10 +2,6 @@ package xcfg4j.console;
 
 import org.apache.ibatis.session.SqlSession;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
@@ -16,7 +12,7 @@ public class App
     			System.out.println(cs.getConnectionStr());
     		}
     	}
-    	Log4jHelper.LOGGER.error("start openSession");
+    	Log4jHelper.LOGGER.info("start openSession");
     	SqlSession session = MyBatisHelper.getSession().openSession();
     	try {
     		 IUser iuser = session.getMapper(IUser.class);
@@ -28,7 +24,7 @@ public class App
 		} finally {
 			session.close();
 		}
-    	Log4jHelper.LOGGER.error("session close");
+    	Log4jHelper.LOGGER.info("session close");
     }
     
     
