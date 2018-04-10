@@ -71,6 +71,9 @@ public class XmlConfig<T extends XmlConfigEntity> extends XmlConfigEntity {
 		if (!file.exists()) {
 			return null;
 		}
+		if (entity.getFields().length == 0) {
+			return null;
+		}
 		String xmlStr = Helper.readToString(file);
 		return Helper.deserializeFromXml(xmlStr, entity);
 	}
