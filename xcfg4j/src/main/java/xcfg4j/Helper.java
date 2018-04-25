@@ -48,7 +48,7 @@ public class Helper {
 		String appName = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(getRuningPath() + "/app.properties");
+			File file = getAppFile();
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			appName = prop.getProperty("appname");
@@ -70,7 +70,7 @@ public class Helper {
 		String environment = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(getRuningPath() + "/app.properties");
+			File file = getAppFile();
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			environment = prop.getProperty("environment");
@@ -106,7 +106,7 @@ public class Helper {
 		String port = "";
 		Properties prop = new Properties();
 		try {
-			File file = new File(getRuningPath() + "/app.properties");
+			File file = getAppFile();
 			InputStream input = new FileInputStream(file);
 			prop.load(input);
 			host = prop.getProperty("remote_cfg_host");
@@ -125,6 +125,11 @@ public class Helper {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	
+	private static File getAppFile() {
+		File file = new File(Helper.class.getResource("application.properties").getFile());
+		return file;
 	}
 
 	public static boolean isNullOrEmpty(String input) {
