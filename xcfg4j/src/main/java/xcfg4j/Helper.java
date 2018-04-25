@@ -128,7 +128,7 @@ public class Helper {
 	}
 	
 	private static File getAppFile() {
-		File file = new File(Helper.class.getResource("application.properties").getFile());
+		File file = new File(Helper.class.getResource("/application.properties").getFile());
 		return file;
 	}
 
